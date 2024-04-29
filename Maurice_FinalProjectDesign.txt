@@ -1,0 +1,58 @@
+Main Function 
+One big loop for main menu (until user chooses to exit) 
+
+Provide menu with options based on user input (load new, display, edit, exit) 
+
+Sub-menu for edit based on user input (crop, dim, brighten) (check for incorrect input and return to sub-menu if true) 
+
+Display edited image each time 
+
+Prompt user if they would like to save to a file after each edit 
+
+If yes, ask user for file name 
+
+After file name and if no, return to main menu 
+
+Repeat until user chooses to exit 
+
+
+Other Functions 
+
+imageDisplay 
+Input Parameters: file pointer, int rows, int columns, int 2d array 
+
+Returned Output: none 
+
+Functionality: Displays image that is currently within designated file 
+
+
+imageCrop 
+Input Parameters: int rows, int columns, int 2d array 
+
+Returned Output: int 2d array 
+
+Functionality: Removes certain parts of the 2d array based on user input 
+
+
+imageDim 
+Input Parameters: int 2d array, int dimness 
+
+Returned Output: int 2d array 
+
+Functionality: dims all cells of the array based on user choice by integer 
+
+
+imageBrighten 
+Input Parameters: int 2d array, int brightness 
+
+Returned Output: int 2d array 
+
+Functionality: brightens all cells of the array based on user choice by integer 
+
+
+fileRename 
+Input Parameters: file pointer, int 2d array 
+
+Returned Output: none 
+
+Functionality: Results in the new file with the user’s edited image 
