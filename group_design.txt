@@ -1,0 +1,17 @@
+functions:
+
+mainMenu()
+
+loadImage()
+
+displayImage()
+
+editMenu()
+
+cropImage()
+
+brightenImage()
+
+saveImage()
+
+exit()
