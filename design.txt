@@ -1,0 +1,60 @@
+Design Document
+Chris Aboujaoude
+Erinstagram!
+
+Data:
+
+Main Image – 2D array of int (unknown dimensions)
+Edited Images – 2D array of int (unknown dimensions)
+Image Files - File pointers
+File pointers field, scores
+Menu Option for main functions – char
+Menu Option for editing functions – char
+Crop Dimensions - ints
+Image File Names– strings
+
+Main Program Operation:
+
+User prompted from menu with options to load the contents of a specified image file, display the current stored image, edit the stored image, or exit the program. Files will contain a 2D array of unknown dimensions with “brightness values” for each pixel, integers ranging from 0 to 4. These are converted into corresponding characters (‘ ‘, ‘.’, ‘o’, ‘O’, ‘0’) to store and display to screen. If the user wants to edit the image, they will be prompted with a secondary menu with choices to crop, dim, brighten, or rotate the stored image. The user will then have the choice to save these edited images to a file with a name of their choosing. The program will loop and bring you back to the main menu until the user decides to exit the program.
+
+Functions:
+
+main()
+Data: Menu selection option
+Functionality: While loop for user menu input. If user chooses to edit the image, prompts the user with the secondary menu.
+
+loadImage()
+Input Parameters: File pointer, int rows, int columns, int field 2D array
+Returned Output: none
+Functionality: Load values from file into main image 2D array.
+
+displayImage()
+Input Parameters: int rows, int columns, int image 2D array
+Returned Output: none
+Functionality: Display the current main image using the corresponding
+characters. This will result in a 2D array.
+
+cropImage()
+Input Parameters: int rows, int columns, int image 2D array
+Returned Output: none
+Functionality: User will specify the dimensions of their desired cropped image. Will call the function saveFile() by passing pointers to the reduced size array.
+
+dimImage()
+Input Parameters: int rows, int columns, int image 2D array
+Returned Output: none
+Functionality: Loop through the 2D array and subtract 1 from each brightness value with a floor of 0. Will call the function saveFile() by passing pointers to the dimmed array.
+
+brightenImage()
+Input Parameters: int rows, int columns, int image 2D array
+Returned Output: none
+Functionality: Loop through the 2D array and add 1 from each brightness value with a ceiling of 4. Will call the function saveFile() by passing pointers to the brightened array.
+
+rotateImage()
+Input Parameters: int rows, int columns, int image 2D array
+Returned Output: none
+Functionality: Loop through the 2D array and convert each row into a column, and store into a new 2D array. Will call the function saveFile() by passing pointers to the rotated array.
+
+saveFile()
+Input Parameters: int rows, int columns, int edited image 2D array
+Returned Output: none
+Functionality: Prompt the user asking if they would like to save the edited image to a new file. If the user says yes, prompt them for a file name, then save image to that new file.
