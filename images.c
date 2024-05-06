@@ -4,20 +4,27 @@
 
 #include <stdio.h>
 //use these macros for 2D array max sizes
-#define ROWMAX 50
-#define COLMAX 50
+#define ROWMAX 30
+#define COLMAX 30
 
 //function prototypes to go here
-void loadImage();
-void displayImage();
+void loadImage(char *fiel, int numDump[][COLMAX]);
+void displayImage(int numDump[][COLMAX]);
 void cropImage();
 void dimImage();
 void brightenImage();
 void saveImage();
 
+//universal check to see if loadImage was used
+int imageExists = 0;
+
 int main(){
 
-	int mainMenuChoice;
+	int mainMenuChoice, 
+	imageArray[ROWMAX][COLMAX] = {0};
+	//image array set to 0 to stop junk values from printing
+	char fileName[50];
+	//string to read user input for file
 	
 	do{
 		printf("\nI Can't Believe It's Not Adobe!\n");
@@ -31,11 +38,21 @@ int main(){
 		switch(mainMenuChoice){
 			case 1:
 			printf("\nPlease input the name of the image (text) file: ");
-			//function to open the file
+			scanf("%s", fileName);
+			
+			loadImage(fileName, imageArray);
+			//loads the file, but prints a 30x30 array of zeros instead
 			break;
 			
 			case 2:
-			//should just actually display image, will be a function
+			if(imageExists != 1){
+				printf("\nCan't display anything if there's nothing to display!\n");
+				//checks to see if loadImage was used
+			}
+			else{
+			displayImage(imageArray);
+			//displays loaded file on the front end of 30x30 array of zeros, don't know why
+			}
 			break;
 			
 			case 3:
@@ -57,21 +74,47 @@ int main(){
 }
 
 //function definitions to go here
-void loadImage(){
-
+void loadImage(char *fiel, int numDump[][COLMAX]){
+	FILE *flie = fopen(fiel, "r");
+	
+	if(flie == NULL){
+		printf("\nThat file doesn't exist. Did you include the extension?\n");
+		return;
+	}
+	
+	for(int x = 0; x < ROWMAX; x++){
+		for(int y = 0; y < COLMAX; y++){
+			fscanf(flie, "%d", &numDump[x][y]);
+		}
+	}
+	printf("\nFile found! Open sesame!\n");
+	imageExists = 1;
+	//this is a workaround bool, changes only if file exists
+	
+	fclose(flie);
 }
-void displayImage(){
 
+void displayImage(int numDump[][COLMAX]){
+	for(int x = 0; x < ROWMAX; x++){
+		for(int y = 0; y < COLMAX; y++){
+			printf("%d", numDump[x][y]);
+		}
+		printf("\n");
+	}
 }
+
 void cropImage(){
 
 }
+
 void dimImage(){
 
 }
+
 void brightenImage(){
 
 }
+
 void saveImage(){
 
 }
