@@ -8,8 +8,8 @@
 #define COLMAX 30
 
 //function prototypes to go here
-void loadImage(char *fiel, int numDump[][COLMAX]);
-void displayImage(int numDump[][COLMAX]);
+void loadImage(char *fiel, char numDump[][COLMAX]);
+void displayImage(char numDump[][COLMAX]);
 void cropImage();
 void dimImage();
 void brightenImage();
@@ -20,9 +20,9 @@ int imageExists = 0;
 
 int main(){
 
-	int mainMenuChoice, 
-	imageArray[ROWMAX][COLMAX] = {0};
-	//image array set to 0 to stop junk values from printing
+	int mainMenuChoice; 
+	char imageArray[ROWMAX][COLMAX] = {'\0'};
+	//makes any dead space in a file not fitting the max nonexistent
 	char fileName[50];
 	//string to read user input for file
 	
@@ -41,7 +41,6 @@ int main(){
 			scanf("%s", fileName);
 			
 			loadImage(fileName, imageArray);
-			//loads the file, but prints a 30x30 array of zeros instead
 			break;
 			
 			case 2:
@@ -51,7 +50,6 @@ int main(){
 			}
 			else{
 			displayImage(imageArray);
-			//displays loaded file on the front end of 30x30 array of zeros, don't know why
 			}
 			break;
 			
@@ -74,7 +72,7 @@ int main(){
 }
 
 //function definitions to go here
-void loadImage(char *fiel, int numDump[][COLMAX]){
+void loadImage(char *fiel, char numDump[][COLMAX]){
 	FILE *flie = fopen(fiel, "r");
 	
 	if(flie == NULL){
@@ -84,7 +82,7 @@ void loadImage(char *fiel, int numDump[][COLMAX]){
 	
 	for(int x = 0; x < ROWMAX; x++){
 		for(int y = 0; y < COLMAX; y++){
-			fscanf(flie, "%d", &numDump[x][y]);
+			fscanf(flie, "%c", &numDump[x][y]);
 		}
 	}
 	printf("\nFile found! Open sesame!\n");
@@ -94,12 +92,11 @@ void loadImage(char *fiel, int numDump[][COLMAX]){
 	fclose(flie);
 }
 
-void displayImage(int numDump[][COLMAX]){
+void displayImage(char numDump[][COLMAX]){
 	for(int x = 0; x < ROWMAX; x++){
 		for(int y = 0; y < COLMAX; y++){
-			printf("%d", numDump[x][y]);
+			printf("%c", numDump[x][y]);
 		}
-		printf("\n");
 	}
 }
 
