@@ -13,7 +13,9 @@ void displayImage(char numDump[][COLMAX], int rows, int cols);
 void cropImage(char numDump[][COLMAX], int rows, int cols);
 void dimImage(char numDump[][COLMAX], int rows, int cols);
 void brightenImage(char numDump[][COLMAX], int rows, int cols);
-void saveImage(char *feil, char numDump[][COLMAX], int rows, int cols);
+void rotateImageCW(char numDump[][COLMAX], int rows, int cols);
+void rotateImageCCW(char numDump[][COLMAX], int rows, int cols);
+void saveImage();
 
 //universal check to see if loadImage was used
 int imageExists = 0;
@@ -21,13 +23,12 @@ int imageExists = 0;
 int main(){
 
 	int mainMenuChoice, editMenuChoice;
-	char saveChoice;
 	char imageArray[ROWMAX][COLMAX] = {'\0'};
 	//makes any dead space in a file not fitting the max nonexistent
-	char fileName[50], newFile[50];
+	char fileName[50];
 	//string to read user input for file
 	int rowsMain, colsMain;
-	
+
 	do{
 		printf("\nI Can't Believe It's Not Adobe!\n");
 		printf("1: Load Image\n");
@@ -36,78 +37,80 @@ int main(){
 		printf("0: Exit\n\n");
 		printf("Select one of the above options: ");
 		scanf("%d", &mainMenuChoice);
-		
+
 		switch(mainMenuChoice){
 			case 1:
 			printf("\nPlease input the name of the image (text) file: ");
 			scanf("%s", fileName);
-			
 			loadImage(fileName, imageArray, &rowsMain, &colsMain);
 			break;
-			
+
 			case 2:
 			if(imageExists != 1){
 				printf("\nCan't display anything if there's nothing to display!\n");
 				//checks to see if loadImage was used
 			}
 			else{
-			displayImage(imageArray, rowsMain, colsMain);
+				displayImage(imageArray, rowsMain, colsMain);
 			}
 			break;
-			
+
 			case 3:
 			if(imageExists != 1){
 				printf("\nCan't edit anything if there's nothing to edit!\n");
 				//another loadImage checkpoint
-			}
+}
 			else{
 			printf("\nEDITING MENU\n");
 			printf("1: Crop Image\n");
 			printf("2: Dim Image\n");
 			printf("3: Brighten Image\n");
+			printf("4: Rotate Image CW\n");
+			printf("5: Rotate Image CCW\n");
 			printf("0: Return\n\n");
 			printf("Select one of the above options: ");
 			scanf("%d", &editMenuChoice);
-			
+
 			switch(editMenuChoice){
 				case 1:
 				cropImage(imageArray, rowsMain, colsMain);
 				break;
-				
+
 				case 2:
 				dimImage(imageArray, rowsMain, colsMain);
 				break;
-				
+
 				case 3:
 				brightenImage(imageArray, rowsMain, colsMain);
 				break;
-				
+
+				case 4:
+				rotateImageCW(imageArray, rowsMain, colsMain);
+				break;
+
+				case 5:
+				rotateImageCCW(imageArray, rowsMain, colsMain);
+				break;
+
 				case 0:
 				break;
-				
+
 				default:
 				printf("\nThat wasn't a valid input. Returning to main menu.\n");
 				break;
 			}
-			printf("Would you like to save your new image?(Y/N): ");
-				scanf(" %c", &saveChoice);
-				if(saveChoice == 'Y' || 'y'){
-					printf("\nEnter your image's name (include the extension): ");
-					scanf("%s", newFile);
-					saveImage(newFile, imageArray, rowsMain, colsMain);
-				}
-				break;
 			}
-			
-			case 0: 
+			break;
+
+			case 0:
 			printf("\nAuf wiedersehen. (That means goodbye.)\n\n");
 			break;
-			
+
 			default:
 			printf("\nHmm, it appears that's an invalid input. You should try again.\n");
 			break;
 		}
-		
+
 	}while(mainMenuChoice != 0);
 
 	return 0;
@@ -119,10 +122,10 @@ void loadImage(char *fiel, char numDump[][COLMAX], int* rowsPtr, int* colsPtr){
 	int rows = 0;
 	int cols = 0;
 	int colsMax = 0;
-	
+
 	if(flie == NULL){
 		printf("\nThat file doesn't exist. Did you include the extension?\n");
-		return;
+	return;
 	}
 	printf("\n");
 	while(fscanf(flie, "%c", &numDump[rows][cols]) == 1){
@@ -131,19 +134,19 @@ void loadImage(char *fiel, char numDump[][COLMAX], int* rowsPtr, int* colsPtr){
 			if(cols > colsMax){
 				colsMax = cols;
 			}
-			cols = 0;
+		cols = 0;
 		}
 		else{
-			cols++;
+		cols++;
 		}
 	}
 	*rowsPtr = rows;
 	*colsPtr = colsMax;
-	
+
 	printf("\nFile found! Open sesame!\n");
 	imageExists = 1;
 	//this is a workaround bool, changes only if file exists
-	
+
 	fclose(flie);
 }
 
@@ -155,19 +158,19 @@ void displayImage(char numDump[][COLMAX], int rows, int cols){
 				case '0':
 				printf(" ");
 				break;
-				
+
 				case '1':
 				printf(".");
 				break;
-				
+
 				case '2':
 				printf("o");
 				break;
-				
+
 				case '3':
 				printf("O");
 				break;
-				
+
 				case '4':
 				printf("0");
 				break;
@@ -208,91 +211,124 @@ void cropImage(char numDump[][COLMAX], int rows, int cols){
 		scanf("%d", &colRight);
 	}
 	printf("\n");
-	
+
 	for(int x = rowTop - 1; x < rowBot; x++){
 		for(int y = colLeft - 1; y < colRight; y++){
 			switch(numDump[x][y]){
 				case '0':
 				printf(" ");
 				break;
-				
+
 				case '1':
 				printf(".");
 				break;
-					
+
 				case '2':
 				printf("o");
 				break;
-					
+
 				case '3':
 				printf("O");
 				break;
-					
+
 				case '4':
 				printf("0");
 				break;
 			}
 		}
-		printf("\n");
+	printf("\n");
 	}
 
 }
 
 void dimImage(char numDump[][COLMAX], int rows, int cols){
+	printf("\n");
+	char saveChoice;
+	char newFile[50];
+	int numDump2[rows][cols];
 	for(int x = 0; x < rows; x++){
 		for(int y = 0; y < cols; y++){
 			switch(numDump[x][y]){
-				case '4': 
+				case '4':
 				printf("O");
+				numDump2[x][y] = 3;
 				break;
-				
+
 				case '3':
 				printf("o");
+				numDump2[x][y] = 2;
 				break;
-				
+
 				case '2':
 				printf(".");
+				numDump2[x][y] = 1;
 				break;
-				
+
 				case '1':
 				printf(" ");
+				numDump2[x][y] = 0;
 				break;
-				
+
 				case '0':
 				printf(" ");
+				numDump2[x][y] = 0;
 				break;
 			}
 		}
 		printf("\n");
 	}
+	printf("Would you like to save your new image?(Y/N): ");
+	scanf(" %c", &saveChoice);
+	if(saveChoice == 'Y' || saveChoice == 'y'){
+		printf("\nEnter your image's name (include the extension): ");
+		scanf("%s", newFile);
+		saveImage(newFile, numDump2, rows, cols);
+	}
+
 }
 
 void brightenImage(char numDump[][COLMAX], int rows, int cols){
+	char saveChoice;
+	char newFile[50];
+	int numDump2[rows][cols];
+	printf("\n");
 	for(int x = 0; x < rows; x++){
 		for(int y = 0; y < cols; y++){
 			switch(numDump[x][y]){
-				case '4': 
+				case '4':
 				printf("0");
+				numDump2[x][y] = 4;
 				break;
-				
+
 				case '3':
 				printf("0");
+				numDump2[x][y] = 4;
 				break;
-				
+
 				case '2':
 				printf("O");
+				numDump2[x][y] = 3;
 				break;
-				
+
 				case '1':
 				printf("o");
+				numDump2[x][y] = 2;
 				break;
-				
+
 				case '0':
 				printf(".");
+				numDump2[x][y] = 1;
 				break;
 			}
 		}
 		printf("\n");
+	}
+	printf("Would you like to save your new image?(Y/N): ");
+	scanf(" %c", &saveChoice);
+	if(saveChoice == 'Y' || saveChoice == 'y'){
+		printf("\nEnter your image's name (include the extension): ");
+		scanf("%s", newFile);
+		saveImage(newFile, numDump2, rows, cols);
 	}
 }
 
@@ -309,5 +345,82 @@ void saveImage(char *feil, char numDump[][COLMAX], int rows, int cols){
 		fprintf(foil, "\n");
 	}
 	fclose(foil);
+}
+void rotateImageCW(char numDump[][COLMAX], int rows, int cols){
+
+	int numDump2[cols][rows];
+
+	for (int x = 0; x < cols; x++) {
+		for (int y = 0; y < rows; y++) {
+			numDump2[x][y] = numDump[rows - 1 - y][x];
+		}
+	}
+
+	printf("\n");
+	for(int x = 0; x < cols; x++){
+		for(int y = 0; y < rows; y++){
+			switch(numDump2[x][y]){
+				case '4':
+				printf("0");
+				break;
+
+				case '3':
+				printf("O");
+				break;
+
+				case '2':
+				printf("o");
+				break;
+
+				case '1':
+				printf(".");
+				break;
+
+				case '0':
+				printf(" ");
+				break;
+			}
+		}
+		printf("\n");
+	}
+}
+
+void rotateImageCCW(char numDump[][COLMAX], int rows, int cols){
+
+	int numDump2[cols][rows];
+
+	for (int x = 0; x < cols; x++) {
+		for (int y = 0; y < rows; y++) {
+			numDump2[x][y] = numDump[y][cols - 1 - x];
+		}
+	}
+
+	printf("\n");
+	for(int x = 0; x < cols; x++){
+		for(int y = 0; y < rows; y++){
+			switch(numDump2[x][y]){
+				case '4':
+				printf("0");
+				break;
+
+				case '3':
+				printf("O");
+				break;
+
+				case '2':
+				printf("o");
+				break;
+
+				case '1':
+				printf(".");
+				break;
+
+				case '0':
+				printf(" ");
+				break;
+			}
+		}
+		printf("\n");
+	}
 }
 
