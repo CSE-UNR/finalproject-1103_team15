@@ -13,7 +13,7 @@ void displayImage(char numDump[][COLMAX], int rows, int cols);
 void cropImage(char numDump[][COLMAX], int rows, int cols);
 void dimImage(char numDump[][COLMAX], int rows, int cols);
 void brightenImage(char numDump[][COLMAX], int rows, int cols);
-void saveImage();
+void saveImage(char *feil, char numDump[][COLMAX], int rows, int cols);
 
 //universal check to see if loadImage was used
 int imageExists = 0;
@@ -209,7 +209,6 @@ void cropImage(char numDump[][COLMAX], int rows, int cols){
 	}
 	printf("\n");
 	
-	
 	for(int x = rowTop - 1; x < rowBot; x++){
 		for(int y = colLeft - 1; y < colRight; y++){
 			switch(numDump[x][y]){
@@ -240,7 +239,6 @@ void cropImage(char numDump[][COLMAX], int rows, int cols){
 }
 
 void dimImage(char numDump[][COLMAX], int rows, int cols){
-	
 	for(int x = 0; x < rows; x++){
 		for(int y = 0; y < cols; y++){
 			switch(numDump[x][y]){
