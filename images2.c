@@ -8,11 +8,11 @@
 #define COLMAX 21
 
 //function prototypes to go here
-void loadImage(char *fiel, char numDump[][COLMAX]);
-void displayImage(char numDump[][COLMAX]);
-void cropImage();
-void dimImage(char numDump[][COLMAX]);
-void brightenImage(char numDump[][COLMAX]);
+void loadImage(char *fiel, char numDump[][COLMAX], int* rowsPtr, int* colsPtr);
+void displayImage(char numDump[][COLMAX], int rows, int cols);
+void cropImage(char numDump[][COLMAX], int rows, int cols);
+void dimImage(char numDump[][COLMAX], int rows, int cols);
+void brightenImage(char numDump[][COLMAX], int rows, int cols);
 void saveImage();
 
 //universal check to see if loadImage was used
@@ -20,10 +20,11 @@ int imageExists = 0;
 
 int main(){
 
-	int mainMenuChoice, editMenuChoice; 
+	int mainMenuChoice, editMenuChoice;
 	char imageArray[ROWMAX][COLMAX] = {'\0'};
 	//makes any dead space in a file not fitting the max nonexistent
 	char fileName[50];
+	int rowsMain, colsMain;
 	//string to read user input for file
 	
 	do{
@@ -40,7 +41,7 @@ int main(){
 			printf("\nPlease input the name of the image (text) file: ");
 			scanf("%s", fileName);
 			
-			loadImage(fileName, imageArray);
+			loadImage(fileName, imageArray, &rowsMain, &colsMain);
 			break;
 			
 			case 2:
@@ -49,7 +50,7 @@ int main(){
 				//checks to see if loadImage was used
 			}
 			else{
-			displayImage(imageArray);
+			displayImage(imageArray, rowsMain, colsMain);
 			}
 			break;
 			
@@ -69,17 +70,15 @@ int main(){
 			
 			switch(editMenuChoice){
 				case 1:
-				printf("In progress");
+				cropImage(imageArray, rowsMain, colsMain);
 				break;
 				
 				case 2:
-				dimImage(imageArray);
-				displayImage(imageArray);
+				dimImage(imageArray, rowsMain, colsMain);
 				break;
 				
 				case 3:
-				brightenImage(imageArray);
-				displayImage(imageArray);
+				brightenImage(imageArray, rowsMain, colsMain);
 				break;
 				
 				case 0:
@@ -107,19 +106,32 @@ int main(){
 }
 
 //function definitions to go here
-void loadImage(char *fiel, char numDump[][COLMAX]){
+void loadImage(char *fiel, char numDump[][COLMAX], int* rowsPtr, int* colsPtr){
 	FILE *flie = fopen(fiel, "r");
+	int rows = 0;
+	int cols = 0;
+	int colsMax = 0;
 	
 	if(flie == NULL){
 		printf("\nThat file doesn't exist. Did you include the extension?\n");
 		return;
 	}
-	
-	for(int x = 0; x < ROWMAX; x++){
-		for(int y = 0; y < COLMAX; y++){
-			fscanf(flie, "%c", &numDump[x][y]);
+	printf("\n");
+	while(fscanf(flie, "%c", &numDump[rows][cols]) == 1){
+		if(numDump[rows][cols] == '\n'){
+			rows++;
+			if(cols > colsMax){
+				colsMax = cols;
+			}
+			cols = 0;
+		}
+		else{
+			cols++;
 		}
 	}
+	*rowsPtr = rows;
+	*colsPtr = colsMax;
+	
 	printf("\nFile found! Open sesame!\n");
 	imageExists = 1;
 	//this is a workaround bool, changes only if file exists
@@ -127,9 +139,10 @@ void loadImage(char *fiel, char numDump[][COLMAX]){
 	fclose(flie);
 }
 
-void displayImage(char numDump[][COLMAX]){
-	for(int x = 0; x < ROWMAX; x++){
-		for(int y = 0; y < COLMAX; y++){
+void displayImage(char numDump[][COLMAX], int rows, int cols){
+	printf("\n");
+	for(int x = 0; x < rows; x++){
+		for(int y = 0; y < cols; y++){
 			switch(numDump[x][y]){
 				case '0':
 				printf(" ");
@@ -156,65 +169,104 @@ void displayImage(char numDump[][COLMAX]){
 	}
 }
 
-void cropImage(){
+void cropImage(char numDump[][COLMAX], int rows, int cols){
+	int rowtop;
+	int rowbot;
+	int colleft;
+	int colright;
+
+	printf("\nWhat would you like the top row to be? (from 1 to %d): ", rows);
+	scanf("%d", &rowtop);
+	printf("What would you like the bottom row to be? (from %d to %d): ", rowtop, rows);
+	scanf("%d", &rowbot);
+	printf("What would you like the left column to be? (from 1 to %d): ", cols);
+	scanf("%d", &colleft);
+	printf("What would you like the right column to be? (from %d to %d): ", colleft, cols);
+	scanf("%d", &colright);
+	printf("\n");
+	
+	
+	for(int x = rowtop - 1; x < rowbot; x++){
+			for(int y = colleft - 1; y < colright; y++){
+				switch(numDump[x][y]){
+					case '0':
+						printf(" ");
+					break;
+				
+					case '1':
+						printf(".");
+					break;
+					
+					case '2':
+						printf("o");
+					break;
+					
+					case '3':
+						printf("O");
+					break;
+					
+					case '4':
+						printf("0");
+					break;
+				}
+			}
+			printf("\n");
+		}
 
 }
 
-void dimImage(char numDump[][COLMAX]){
-	for(int x = 0; x < ROWMAX; x++){
-		for(int y = 0; y < COLMAX; y++){
+void dimImage(char numDump[][COLMAX], int rows, int cols){
+	
+	for(int x = 0; x < rows; x++){
+		for(int y = 0; y < cols; y++){
 			switch(numDump[x][y]){
+				case '4': 
+				printf("O");
+				break;
+				
+				case '3':
+				printf("o");
+				break;
+				
+				case '2':
+				printf(".");
+				break;
+				
+				case '1':
+				printf(" ");
+				break;
+				
 				case '0':
-				numDump[x][y] = 'O';
-				break;
-				
-				case 'O':
-				numDump[x][y] = 'o';
-				break;
-				
-				case 'o':
-				numDump[x][y] = '.';
-				break;
-				
-				case '.':
-				numDump[x][y] = ' ';
-				break;
-				
-				case ' ':
-				numDump[x][y] = ' ';
+				printf(" ");
 				break;
 			}
 		}
+		printf("\n");
 	}
 }
 
-void brightenImage(char numDump[][COLMAX]){
-	for(int x = 0; x < ROWMAX; x++){
-		for(int y = 0; y < COLMAX; y++){
+void brightenImage(char numDump[][COLMAX], int rows, int cols){
+	for(int x = 0; x < rows; x++){
+		for(int y = 0; y < cols; y++){
 			switch(numDump[x][y]){
-				case ' ':
-				numDump[x][y] = '.';
-				//printf(".");
+				case '4': 
+				printf("0");
 				break;
 				
-				case '.':
-				numDump[x][y] = 'o';
-				//printf("o");
+				case '3':
+				printf("0");
 				break;
 				
-				case 'o':
-				numDump[x][y] = 'O';
-				//printf("O");
+				case '2':
+				printf("O");
 				break;
 				
-				case 'O':
-				numDump[x][y] = '0';
-				//printf("0");
+				case '1':
+				printf("o");
 				break;
 				
 				case '0':
-				numDump[x][y] = '0';
-				//printf("0");
+				printf(".");
 				break;
 			}
 		}
