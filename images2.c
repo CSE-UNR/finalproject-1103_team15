@@ -21,11 +21,12 @@ int imageExists = 0;
 int main(){
 
 	int mainMenuChoice, editMenuChoice;
+	char saveChoice;
 	char imageArray[ROWMAX][COLMAX] = {'\0'};
 	//makes any dead space in a file not fitting the max nonexistent
-	char fileName[50];
-	int rowsMain, colsMain;
+	char fileName[50], newFile[50];
 	//string to read user input for file
+	int rowsMain, colsMain;
 	
 	do{
 		printf("\nI Can't Believe It's Not Adobe!\n");
@@ -88,8 +89,15 @@ int main(){
 				printf("\nThat wasn't a valid input. Returning to main menu.\n");
 				break;
 			}
+			printf("Would you like to save your new image?(Y/N): ");
+				scanf(" %c", &saveChoice);
+				if(saveChoice == 'Y' || 'y'){
+					printf("\nEnter your image's name (include the extension): ");
+					scanf("%s", newFile);
+					saveImage(newFile, imageArray, rowsMain, colsMain);
+				}
+				break;
 			}
-			break;
 			
 			case 0: 
 			printf("\nAuf wiedersehen. (That means goodbye.)\n\n");
@@ -170,48 +178,64 @@ void displayImage(char numDump[][COLMAX], int rows, int cols){
 }
 
 void cropImage(char numDump[][COLMAX], int rows, int cols){
-	int rowtop;
-	int rowbot;
-	int colleft;
-	int colright;
+	int rowTop;
+	int rowBot;
+	int colLeft;
+	int colRight;
 
 	printf("\nWhat would you like the top row to be? (from 1 to %d): ", rows);
-	scanf("%d", &rowtop);
-	printf("What would you like the bottom row to be? (from %d to %d): ", rowtop, rows);
-	scanf("%d", &rowbot);
+	scanf("%d", &rowTop);
+	while(rowTop > rows || rowTop < 1){
+		printf("You're not adding to the image, try again: ");
+		scanf("%d", &rowTop);
+	}
+	printf("What would you like the bottom row to be? (from %d to %d): ", rowTop, rows);
+	scanf("%d", &rowBot);
+	while(rowBot > rows || rowBot < 1){
+		printf("You're not adding to the image, try again: ");
+		scanf("%d", &rowBot);
+	}
 	printf("What would you like the left column to be? (from 1 to %d): ", cols);
-	scanf("%d", &colleft);
-	printf("What would you like the right column to be? (from %d to %d): ", colleft, cols);
-	scanf("%d", &colright);
+	scanf("%d", &colLeft);
+	while(rowTop > cols || colLeft < 1){
+		printf("You're not adding to the image, try again: ");
+		scanf("%d", &colLeft);
+	}
+	printf("What would you like the right column to be? (from %d to %d): ", colLeft, cols);
+	scanf("%d", &colRight);
+	while(rowTop > cols || colRight < 1){
+		printf("You're not adding to the image, try again: ");
+		scanf("%d", &colRight);
+	}
 	printf("\n");
 	
 	
-	for(int x = rowtop - 1; x < rowbot; x++){
-			for(int y = colleft - 1; y < colright; y++){
-				switch(numDump[x][y]){
-					case '0':
-						printf(" ");
-					break;
+	for(int x = rowTop - 1; x < rowBot; x++){
+		for(int y = colLeft - 1; y < colRight; y++){
+			switch(numDump[x][y]){
+				case '0':
+				printf(" ");
+				break;
 				
-					case '1':
-						printf(".");
-					break;
+				case '1':
+				printf(".");
+				break;
 					
-					case '2':
-						printf("o");
-					break;
+				case '2':
+				printf("o");
+				break;
 					
-					case '3':
-						printf("O");
-					break;
+				case '3':
+				printf("O");
+				break;
 					
-					case '4':
-						printf("0");
-					break;
-				}
+				case '4':
+				printf("0");
+				break;
 			}
-			printf("\n");
 		}
+		printf("\n");
+	}
 
 }
 
@@ -274,7 +298,18 @@ void brightenImage(char numDump[][COLMAX], int rows, int cols){
 	}
 }
 
-void saveImage(){
-
+void saveImage(char *feil, char numDump[][COLMAX], int rows, int cols){
+	FILE *foil = fopen(feil, "w");
+	if(foil == NULL){
+		printf("Let me get my glasses because I can't seem to find this file.");
+		return;
+	}
+	for(int x = 0; x < rows; x++){
+		for(int y = 0; y < cols; y++){
+			fprintf(foil, "%c", numDump[x][y]);
+		}
+		fprintf(foil, "\n");
+	}
+	fclose(foil);
 }
 
